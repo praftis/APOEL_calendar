@@ -7,7 +7,7 @@ times filled in later. This directory automates that.
 ## What runs
 
 `update-fixtures.cmd` is registered as a Windows scheduled task named
-**APOEL calendar fixtures**, running daily at 20:00. It pulls the latest commit,
+**APOEL calendar fixtures**, running daily at 14:00. It pulls the latest commit,
 then hands `update-fixtures-prompt.md` to Claude Code in headless mode. Claude
 reads cfa.com.cy, fills in any newly announced dates, times and venues, and
 commits and pushes only if something actually changed.
