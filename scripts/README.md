@@ -4,6 +4,10 @@ The Cyprus FA announces kickoff times one or two matchdays at a time, so most of
 `APOEL_calendar.ics` starts life as all-day placeholder events that get exact
 times filled in later. This directory automates that.
 
+Cup (Κύπελλο Coca-Cola) matches work differently: the opponent is only known
+after each draw, so the daily check adds a new event for each APOEL cup match
+once CFA announces its date.
+
 ## What runs
 
 `update-fixtures.cmd` is registered as a Windows scheduled task named

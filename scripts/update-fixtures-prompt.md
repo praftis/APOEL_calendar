@@ -1,4 +1,4 @@
-You maintain `APOEL_calendar.ics`, an iCalendar file of APOEL Nicosia's fixtures for the 2026-27 Cyprus First Division ("Cyprus League by Stoiximan"). It is at the root of this repository. IT USES CRLF LINE ENDINGS — preserve them exactly.
+You maintain `APOEL_calendar.ics`, an iCalendar file of APOEL Nicosia's fixtures for the 2026-27 Cyprus First Division ("Cyprus League by Stoiximan") and the Cyprus Cup ("Κύπελλο Coca-Cola"). It is at the root of this repository. IT USES CRLF LINE ENDINGS — preserve them exactly.
 
 ## File format
 
@@ -56,9 +56,38 @@ GSP, AEK Arena, Antonis Papadopoulos, Alphamega, Stelios Kyriakidis, Vitex Ammoc
 - To convert a placeholder: replace its two `DTSTART;VALUE=DATE` / `DTEND;VALUE=DATE` lines with `DTSTART:<YYYYMMDD>T<HHMMSS>` and a `DTEND` exactly two hours later. No TZID and no trailing `Z` — floating local time, matching the existing confirmed events.
 - Update LOCATION when the announced stadium differs, reusing the file's existing spelling for that ground where one exists.
 - If an ALREADY-CONFIRMED event's date or time differs from the newest announcement (a postponement or reschedule), update it too, and say so explicitly in the commit message.
-- Never change UID, DTSTAMP or SUMMARY. Never reorder, add or remove events.
+- Never change UID, DTSTAMP or SUMMARY. Never reorder, add or remove events (except adding cup matches — see below).
 - Leave alone any match CFA has not yet announced.
 - Be conservative: if an article is ambiguous about which match or what time, leave that event as a placeholder rather than guessing. A missed update is cheap; a wrong kickoff time makes the owner miss a match.
+
+## Cup matches (Κύπελλο Coca-Cola)
+
+League events exist from the start, but cup events do not: the cup is a knockout, and APOEL's next opponent is only known after each draw (κλήρωση). So for the cup you ADD events, which is the one exception to "never add events" above.
+
+1. On https://www.cfa.com.cy/ also look for recent articles whose title begins with "Κύπελλο Coca-Cola" — round schedules ("Πρόγραμμα αγώνων ...") and draws ("Κλήρωση ..."). The first-phase schedule was news 53825.
+
+2. For every APOEL cup match that has an announced DATE and is not yet in the file, add a VEVENT:
+
+       BEGIN:VEVENT
+       UID:apoel-2026-27-cup-<round>@panagiotis
+       DTSTAMP:<today's date>T000000Z
+       SUMMARY:<Home> - <Away> (Cup)
+       DTSTART:...
+       DTEND:...
+       LOCATION:...
+       END:VEVENT
+
+   - `<round>`: `r1` (Α' φάση), `r2` (Β' φάση), `r3` (Γ' φάση), `qf` (προημιτελικά), `sf` (ημιτελικά), `final`. For a two-legged round, add `-leg1` / `-leg2` (e.g. `qf-leg1`). Look at the existing cup UIDs before choosing — never create a duplicate UID.
+   - Same SUMMARY team spellings as the league, plus the ` (Cup)` suffix. Lower-division opponents are not in the mapping table: transliterate the Greek name simply (e.g. Χαλκάνορας → Chalkanoras) and drop prefixes like "ΑΕ"/"ΑΟ" only if the league table does the same.
+   - Kickoff time known → confirmed form (2 hours long). Only the date known → all-day placeholder form; fill in the time later, like a league placeholder.
+   - LOCATION: the stadium the article names. CFA cup schedules usually name a stadium only when it is NOT the home team's usual ground; when none is named, use the home team's ground as spelled in the file (APOEL → `GSP`). For a lower-division home team with no known ground, leave LOCATION empty rather than guessing.
+   - Insert the new VEVENT in date order among the existing events (right before the first event that starts later).
+
+3. A draw that names APOEL's opponent but no date is NOT enough — wait for the schedule article with the date.
+
+4. If APOEL is eliminated, simply add nothing further. Never delete a cup event that has been played.
+
+5. Cup events you already added follow the same rules as league events afterwards: fill in a missing time, and update date/time/venue on a reschedule (say so in the commit message).
 
 ## Finishing
 
